@@ -8,6 +8,7 @@ config = os.environ.get('CONFIG')
 SCKEY = os.environ.get('SCKEY')
 
 login_url = '{}/auth/login'.format(url)
+#check_url = '{}/user#'.format(url)
 check_url = '{}/user/checkin'.format(url)
 
 def sign(order,user,pwd):
