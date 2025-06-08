@@ -11,14 +11,12 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    # if: github.ref == 'refs/heads/master'
 
     steps:
       - name: Checkout master
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-          # ref: master
 
       - name: Set up python
         uses: actions/setup-python@v5
@@ -33,6 +31,15 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+
+      # 设置代理环境变量
+      - name: Set up proxy from secrets
+        run: |
+          echo "Setting up proxy from GitHub Secrets..."
+        env:
+          HTTP_PROXY: ${{ secrets.HTTP_PROXY }}  # 从 Secrets 传递 HTTP 代理
+          HTTPS_PROXY: ${{ secrets.HTTPS_PROXY }}  # 从 Secrets 传递 HTTPS 代理
+
       - name: Run sign
         env:
           URL: ${{ secrets.URL }}
@@ -40,5 +47,7 @@ jobs:
           EMAIL: ${{ secrets.EMAIL }}
           PASSWD: ${{ secrets.PASSWD }}
           CONFIG: ${{ secrets.CONFIG }}
+          HTTP_PROXY: ${{ secrets.HTTP_PROXY }}  # 再次传递代理环境变量
+          HTTPS_PROXY: ${{ secrets.HTTPS_PROXY }}  # 再次传递代理环境变量
         run: |
           python3 ./main.py
